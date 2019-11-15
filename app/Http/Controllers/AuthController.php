@@ -17,7 +17,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        
+
     }
 
     public function postRegister(Request $request)
@@ -33,20 +33,25 @@ class AuthController extends Controller
             $name = $request->input('name');
             $email = $request->input('email');
             $password = $request->input('password');
+            $vendor = false;
 
-            $user = User::create([
+            if ($request->has('vendor') && $request->input('vendor'))
+                $vendor = true;
+
+            $user = User::forceCreate([
                 'name'      => $name,
                 'email'     => $email,
                 'password'  => $password,
                 'terms_accepted_at' => Carbon::now(),
                 'api_token' => Str::random(64),
                 'code'      => strtolower(Str::random(10)),
+                'is_vendor' => $vendor,
             ]);
 
             return response([
                 'api_token'     => $user->api_token,
                 'name'          => $user->name,
-                'is_vendor'     => false,
+                'is_vendor'     => $user->is_vendor,
                 'code'          => $user->code,
             ], 200);
         } catch (\Illuminate\Database\QueryException $ex) {
@@ -64,7 +69,7 @@ class AuthController extends Controller
         $hash = app()->make('hash');
         $email = $request->input('email');
         $password = $request->input('password');
-        
+
         try
         {
             $user = User::where('email', $email)
@@ -79,7 +84,7 @@ class AuthController extends Controller
                 'is_vendor' => (bool)$user->is_vendor,
                 'code'      => $user->code,
             ], 200);
-            
+
         } catch (\Illuminate\Database\QueryException $ex) {
             return response(null, 500);
         }
