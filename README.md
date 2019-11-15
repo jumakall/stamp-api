@@ -23,4 +23,4 @@ Take the ``.env.example`` file and make a copy of it called ``.env``. The ``APP_
 The last step is to run database migrations. For this you should have the environment up and running. In the environment's root directory, run ``docker-compose exec php php ../artisan migrate``.
 
 ## API request documentation
-Coming soon.
+Available [here](https://documenter.getpostman.com/view/8164635/SW7W5VFj).
